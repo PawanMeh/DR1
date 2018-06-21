@@ -46,7 +46,7 @@ def create_event(owner, subject, description, date,reference_type,reference_name
 		"project_type_2":project_type_2,
 		"booking_date":booking_date,
 		"event_date":date,
-		"call_source":call_source,
+		"booking_source":call_source,
 		"create_event":1
 	})
 	event.insert(ignore_permissions=True)
