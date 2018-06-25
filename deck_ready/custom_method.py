@@ -31,7 +31,10 @@ def create_todo(owner, assigned_by, description, date,reference_name,reference_t
 	todo.insert(ignore_permissions=True)
 
 @frappe.whitelist()
-def create_event(owner, subject, description, date,reference_type,reference_name,color, project_type, project_type_2,booking_date, call_source):
+def create_event(owner, subject, description, date,reference_type,reference_name,color, project_type, project_type_2,booking_date, call_source, responsible):
+	if responsible:
+		user = frappe.db.sql("""select full_name from `tabUser` where name = %s""", responsible)
+		full_name = user [0]
 	event = frappe.get_doc({	
 		"doctype": "Event",
 		"owner": owner,
@@ -47,6 +50,8 @@ def create_event(owner, subject, description, date,reference_type,reference_name
 		"booking_date":booking_date,
 		"event_date":date,
 		"booking_source":call_source,
-		"create_event":1
+		"create_event":1,
+		"responsible":responsible,
+		"full_name":full_name
 	})
 	event.insert(ignore_permissions=True)
