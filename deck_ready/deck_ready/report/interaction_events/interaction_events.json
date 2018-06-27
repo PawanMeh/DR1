@@ -1,0 +1,26 @@
+{
+ "add_total_row": 0, 
+ "apply_user_permissions": 1, 
+ "creation": "2018-06-26 07:28:11.027746", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "modified": "2018-06-27 02:01:28.814524", 
+ "modified_by": "Administrator", 
+ "module": "Deck Ready", 
+ "name": "Interaction Events", 
+ "owner": "Administrator", 
+ "ref_doctype": "Event", 
+ "report_name": "Interaction Events", 
+ "report_type": "Script Report", 
+ "roles": [
+  {
+   "role": "All"
+  }, 
+  {
+   "role": "System Manager"
+  }
+ ]
+}
