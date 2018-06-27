@@ -21,7 +21,7 @@ def execute(filters=None):
 		total_bookings = total_bookings + row["Total Bookings"]
 	data.append({})
 	data.append({'Total Inbound': total_inbound, 'Confirmed Inbound': confirmed_inbound, 
-	'Responsible': 'Totals', 'Cancelled Outbound': cancelled_outbound, 'Total Bookings': total_bookings, 
+	'Full Name': 'Totals', 'Cancelled Outbound': cancelled_outbound, 'Total Bookings': total_bookings, 
 	'Total Outbound': total_outbound, 'Confirmed Outbound': confirmed_outbound, 'Cancelled Inbound': cancelled_inbound})
 	return columns, data
 	
