@@ -6,6 +6,16 @@ import frappe.desk.form.load
 from frappe import _
 
 @frappe.whitelist()
+def add_new_customer(customer_name, lead_name):
+	if frappe.db.exists("Customer",{"customer_name": customer_name}):
+		pass
+	else:
+		doc = frappe.new_doc("Customer")
+		doc.customer_name = customer_name
+		doc.lead_name = lead_name
+		doc.insert()
+
+@frappe.whitelist()
 def add_interaction(doc):
 	"""allow any logged user to post a comment"""
 	doc = frappe.get_doc(json.loads(doc))
