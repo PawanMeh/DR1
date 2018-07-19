@@ -65,3 +65,40 @@ def create_event(owner, subject, description, date,reference_type,reference_name
 		"full_name":full_name
 	})
 	event.insert(ignore_permissions=True)
+
+@frappe.whitelist()
+def make_warranty_from_communication(communication):
+	if communication:
+		comm_doc = frappe.get_doc("Communication", communication)
+		if comm_doc.sender:
+			contact = frappe.db.sql("""select name 
+									from `tabContact`
+									where email_id = %s""", (comm_doc.sender))
+			if contact:
+				contact_name = contact [0][0]
+			else:
+				frappe.throw(_("Contact does not exist for the sender of this email in the system"))
+		else:
+			frappe.throw(_("The communication document does not contain a valid sender"))
+			
+		if contact_name:
+			customer = frappe.db.sql("""select link_name from `tabDynamic Link`
+									where link_doctype = 'Customer'
+									and parent = %s""", (contact_name))
+		if customer:
+			customer_name = customer [0][0]
+		else:
+			frappe.throw(_("The sender email ID is not a customer in the system. Hence warranty claim cannot be raised"))
+
+		warranty_claim = frappe.get_doc({
+			"doctype": "Warranty Claim",
+			"customer": customer_name,
+			"complaint": comm_doc.subject
+		}).insert(ignore_permissions=True)
+
+		comm_doc.reference_doctype = "Warranty Claim"
+		comm_doc.reference_name = warranty_claim.name
+		comm_doc.status = "Linked"
+		comm_doc.save(ignore_permissions=True)
+
+	return warranty_claim.name
