@@ -93,7 +93,8 @@ def make_warranty_from_communication(communication):
 		warranty_claim = frappe.get_doc({
 			"doctype": "Warranty Claim",
 			"customer": customer_name,
-			"complaint": comm_doc.subject
+			"subject": comm_doc.subject,
+			"complaint": comm_doc.content
 		}).insert(ignore_permissions=True)
 
 		comm_doc.reference_doctype = "Warranty Claim"
