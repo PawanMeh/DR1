@@ -90,23 +90,23 @@ app_license = "MIT"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 # 	"all": [
 # 		"deck_ready.tasks.all"
 # 	],
 # 	"daily": [
 # 		"deck_ready.tasks.daily"
 # 	],
-# 	"hourly": [
-# 		"deck_ready.tasks.hourly"
-# 	],
+	"daily": [
+		"deck_ready.custom_method.update_project_warranty_status"
+	]
 # 	"weekly": [
 # 		"deck_ready.tasks.weekly"
 # 	]
 # 	"monthly": [
 # 		"deck_ready.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------

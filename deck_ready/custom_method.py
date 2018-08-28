@@ -4,6 +4,7 @@ import frappe.desk.form.meta
 import frappe.desk.form.load
 
 from frappe import _
+from frappe.utils import add_months, today, date_diff, getdate, add_days, flt, nowdate
 
 @frappe.whitelist()
 def add_new_customer(customer_name, lead_name):
@@ -130,3 +131,23 @@ def create_maint_event(owner,subject,description,start_date,end_date,reference_n
 		
 	})
 	event.insert(ignore_permissions=True)
+
+def update_project_warranty_status():
+	projects = frappe.db.sql('''select name, warranty_period_end_date, project_completion_date
+							from `tabProject`''',as_dict=1)
+
+	for project in projects:
+		if project["warranty_period_end_date"] and project["project_completion_date"]:
+			if date_diff(project["warranty_period_end_date"],nowdate()) >= 0:
+				project_doc = frappe.get_doc("Project", project["name"])
+				project_doc.warranty_status = "Active"
+				project_doc.save()
+			else:
+				if date_diff((getdate(add_months(project["project_completion_date"], 120))), nowdate()) >= 0:
+					project_doc = frappe.get_doc("Project", project["name"])
+					project_doc.warranty_status = "Limited Stain Warranty"
+					project_doc.save()
+				else:
+					project_doc = frappe.get_doc("Project", project["name"])
+					project_doc.warranty_status = "No Warranty"
+					project_doc.save()
