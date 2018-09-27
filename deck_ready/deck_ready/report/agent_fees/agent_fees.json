@@ -1,0 +1,35 @@
+{
+ "add_total_row": 0, 
+ "apply_user_permissions": 1, 
+ "creation": "2018-09-27 07:54:23.328648", 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "modified": "2018-09-27 07:54:23.328648", 
+ "modified_by": "Administrator", 
+ "module": "Deck Ready", 
+ "name": "Agent Fees", 
+ "owner": "Administrator", 
+ "ref_doctype": "Salary Slip", 
+ "report_name": "Agent Fees", 
+ "report_type": "Script Report", 
+ "roles": [
+  {
+   "role": "Projects User"
+  }, 
+  {
+   "role": "HR User"
+  }, 
+  {
+   "role": "Manufacturing User"
+  }, 
+  {
+   "role": "Employee"
+  }, 
+  {
+   "role": "Accounts User"
+  }
+ ]
+}

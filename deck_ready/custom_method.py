@@ -132,6 +132,33 @@ def create_maint_event(owner,subject,description,start_date,end_date,reference_n
 	})
 	event.insert(ignore_permissions=True)
 
+@frappe.whitelist()
+def create_warranty_event(owner,subject,description,start_date,end_date,reference_name,reference_type,booking_date,call_source,responsible,subcontractor_assigned):
+	if responsible:
+		user = frappe.db.sql("""select full_name from `tabUser` where name = %s""", responsible)
+		full_name = user [0]
+	event = frappe.get_doc({	
+		"doctype": "Event",
+		"owner": owner,
+		"subject": subject,
+		"description": description,
+		"starts_on":  start_date,
+		"ends_on": end_date,
+		"event_type": "Warranty Claim",
+		"ref_name": reference_name,
+		"ref_type": reference_type,
+		"color": "#5e3aa8",
+		"event_date":start_date,
+		"booking_source":call_source,
+		"booking_date":booking_date,
+		"create_event":1,
+		"responsible":responsible,
+		"full_name":full_name,
+		"subcontractor_assigned": subcontractor_assigned
+		
+	})
+	event.insert(ignore_permissions=True)
+
 def update_project_warranty_status():
 	projects = frappe.db.sql('''select name, warranty_period_end_date, project_completion_date
 							from `tabProject`''',as_dict=1)
