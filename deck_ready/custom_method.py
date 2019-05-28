@@ -178,3 +178,63 @@ def update_project_warranty_status():
 					project_doc = frappe.get_doc("Project", project["name"])
 					project_doc.warranty_status = "No Warranty"
 					project_doc.save()
+
+def create_project(self, method):
+	#Don't create project if it already exists
+	name_string = self.name [:8]
+	project_name = self.customer + " - "+ name_string
+	project = frappe.db.sql("""select name from `tabProject` where name = %s """,project_name)
+	if project:
+		pass
+	else:
+		project = frappe.new_doc("Project")
+		project.project_name = self.customer + " - "+ self.name
+		project.owner = self.owner
+		project.expected_start_date = self.transaction_date
+		project.expected_end_date = self.delivery_date
+		project.customer = self.customer
+		project.sales_order = self.name
+		project.project_type = "External"
+		project.insert(ignore_permissions=True)
+		tasks = frappe.db.sql('''select distinct task_name, task_owner 
+					from `tabTask Template` 
+					where project_type = %s''', (project.project_type), as_dict = 1)
+		for task in tasks:
+			task_doc = frappe.new_doc("Task")
+			task_doc.subject = task["task_name"]
+			task_doc.task_owner = task["task_owner"]
+			task_doc.project = project.name
+			task_doc.insert(ignore_permissions=True)
+
+		sender_email = "notifications@deckready.net"
+		msg = """ Hi, <br><br> Tasks related to Project: %s have been assigned to you. <br><br> 
+				Please login to the ERP and complete your tasks."""%(project.name)
+		task_owners = frappe.db.sql('''select distinct task_owner 
+						from `tabTask Template` 
+						where project_type = %s and task_owner IS NOT NULL''', (project.project_type), as_dict = 1)
+		email_ids = ""
+		for task in task_owners:
+			email = task["task_owner"] + ";"
+			email_ids += email
+		frappe.sendmail(sender = sender_email, recipients = email_ids, subject = "Tasks assigned for Project - %s"%(project.name), content = msg)
+
+
+def update_project_status(self, method):
+	if self.project:
+		status = frappe.db.sql('''select status 
+						from `tabProject` 
+						where name = %s''', (self.project))
+		if status[0][0] in ["Open", "Ready to schedule"]:
+			task_status = frappe.db.sql('''select status 
+							from `tabTask` 
+							where project = %s and status != "Completed"''', (self.project))
+			if task_status:
+				frappe.db.sql('''update `tabProject` set status = "Open" where name = %s''',(self.project))
+				#project_doc = frappe.get_doc("Project", self.project)
+				#project_doc.status = "Open"
+				#project_doc.save()
+			else:
+				frappe.db.sql('''update `tabProject` set status = "Ready to schedule" where name = %s''',(self.project))
+				#project_doc = frappe.get_doc("Project", self.project)
+				#project_doc.status = "Ready to schedule"
+				#project_doc.save()

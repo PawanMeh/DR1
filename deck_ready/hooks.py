@@ -86,7 +86,15 @@ app_license = "MIT"
 # 		"on_trash": "method"
 #	}
 # }
+doc_events = {
+        "Sales Order": {
+                "on_submit": "deck_ready.custom_method.create_project"
 
+        },
+	"Task" : {
+		"on_update": "deck_ready.custom_method.update_project_status"
+	}
+}
 # Scheduled Tasks
 # ---------------
 
